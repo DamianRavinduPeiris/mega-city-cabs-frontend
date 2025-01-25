@@ -1,4 +1,5 @@
 import './App.css'
+import Features from './ui/Features'
 import Hero from './ui/Hero'
 
 function App() {
@@ -7,6 +8,8 @@ function App() {
   return (
     <>
     <Hero />
+    <Features />
+    
     </>
   )
 }
