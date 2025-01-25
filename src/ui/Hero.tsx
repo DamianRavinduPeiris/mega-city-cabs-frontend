@@ -1,5 +1,7 @@
 import Features from "./Features";
 import Header from "./Header";
+import HowItWorks from "./HowItWorks";
+
 export default function Hero() {
   return (
     <div>
@@ -27,6 +29,7 @@ export default function Hero() {
         </div>
       </section>
       <Features />
+      <HowItWorks />
     </div>
   );
 }
