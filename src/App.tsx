@@ -1,5 +1,5 @@
 import './App.css'
-import Features from './ui/Features'
+import Footer from './ui/Footer'
 import Hero from './ui/Hero'
 
 function App() {
@@ -8,8 +8,7 @@ function App() {
   return (
     <>
     <Hero />
-    <Features />
-    
+    <Footer />
     </>
   )
 }
