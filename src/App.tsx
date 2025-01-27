@@ -1,4 +1,5 @@
 import './App.css'
+import Footer from './ui/Footer'
 import Hero from './ui/Hero'
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
   return (
     <>
     <Hero />
+    <Footer />
     </>
   )
 }

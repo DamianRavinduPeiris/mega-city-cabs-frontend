@@ -2,6 +2,7 @@ import Features from "./Features";
 import Header from "./Header";
 import HowItWorks from "./HowItWorks";
 
+
 export default function Hero() {
   return (
     <div>
@@ -30,6 +31,7 @@ export default function Hero() {
       </section>
       <Features />
       <HowItWorks />
+      
     </div>
   );
 }
