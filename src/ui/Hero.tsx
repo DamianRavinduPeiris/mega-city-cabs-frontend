@@ -1,3 +1,4 @@
+import ContinueWithGoogleButton from "./ContinueWithGoogle";
 import Features from "./Features";
 import Header from "./Header";
 import HowItWorks from "./HowItWorks";
@@ -16,9 +17,7 @@ export default function Hero() {
             <p className="text-xl mb-6">
               Experience the future of urban transportation with MegaCity Cabs.
             </p>
-            <button className="bg-white text-black py-3 px-8 rounded-full font-semibold hover:bg-gray-200 transition duration-300">
-              Book a Ride
-            </button>
+            <ContinueWithGoogleButton />
           </div>
           <div className="md:w-1/2 flex justify-center md:justify-end">
             <img
