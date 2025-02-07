@@ -1,12 +1,17 @@
+import axios from "axios";
+import ContinueWithGoogleButton from "./ContinueWithGoogleButton";
 import Features from "./Features";
 import Header from "./Header";
 import HowItWorks from "./HowItWorks";
-
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Hero() {
   return (
     <div>
-      <Header />
+      <Link to={"/dashboard"}>
+        <Header />
+      </Link>
       <section className="pt-24 pb-12 px-4 bg-black text-white">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
@@ -16,9 +21,7 @@ export default function Hero() {
             <p className="text-xl mb-6">
               Experience the future of urban transportation with MegaCity Cabs.
             </p>
-            <button className="bg-white text-black py-3 px-8 rounded-full font-semibold hover:bg-gray-200 transition duration-300">
-              Book a Ride
-            </button>
+            <ContinueWithGoogleButton />
           </div>
           <div className="md:w-1/2 flex justify-center md:justify-end">
             <img
@@ -31,7 +34,6 @@ export default function Hero() {
       </section>
       <Features />
       <HowItWorks />
-      
     </div>
   );
 }
