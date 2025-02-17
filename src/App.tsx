@@ -1,4 +1,5 @@
 import "./App.css";
+import AdminDashboard from "./ui/admin/AdminDashBoard";
 import Dashboard from "./ui/Dashboard";
 import Footer from "./ui/Footer";
 import Hero from "./ui/Hero";
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
       <Footer />
     </BrowserRouter>

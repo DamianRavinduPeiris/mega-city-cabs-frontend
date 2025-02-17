@@ -2,7 +2,11 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { searchUser } from "../util/AuthHandler";
 import UserType from "../types/UserType";
+import { useNavigate } from "react-router-dom";
+
 export default function ContinueWithGoogleButton() {
+  const navigate = useNavigate();
+
   return (
     <GoogleLogin
       onSuccess={async (credentialResponse) => {
@@ -12,7 +16,7 @@ export default function ContinueWithGoogleButton() {
 
 
         if (decodedToken) {
-          searchUser(decodedToken);
+          searchUser(decodedToken, navigate);
         }
       }}
       onError={() => {
