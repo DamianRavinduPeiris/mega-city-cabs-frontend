@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VehicleList from "./dashboard/VehicleList";
 import Map from "./dashboard/Map";
 import Sidebar from "./dashboard/Sidebar";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/Store";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [destination, setDestination] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user.name === undefined) {
+      navigate("/");
+    }
+  });
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -40,7 +51,7 @@ const Dashboard = () => {
               />
             </div>
             <img
-              src="/placeholder.svg?height=40&width=40"
+              src={user.picture}
               alt="User profile"
               className="w-10 h-10 rounded-full border-2 border-black"
             />
@@ -50,7 +61,9 @@ const Dashboard = () => {
         <main className="flex-1 p-6 overflow-auto">
           <div className="max-w-6xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-              <h2 className="text-2xl font-semibold mb-4">Book a Ride</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                Welcome {user.name}
+              </h2>
               <div className="flex items-center bg-gray-100 p-3 rounded-lg mb-4">
                 <img
                   src="/placeholder.svg?height=20&width=20"
