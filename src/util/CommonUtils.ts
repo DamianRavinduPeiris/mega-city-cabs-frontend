@@ -4,31 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 import UserType from "../types/UserType";
 import ResponseType from "../types/ResponseType";
 import DriverType from "../types/DriverType";
-function validateUser(user: UserType): boolean {
-  const nameRegex = /^[a-zA-Z\s]+$/;
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  const urlRegex =
-    /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=.]*)?$/;
-
-  if (!user.name || !nameRegex.test(user.name)) {
-    showAlert(
-      "Invalid name! Name should only contain letters and spaces.",
-      "❌",
-      "error"
-    );
-    return false;
-  }
-  if (!user.email || !emailRegex.test(user.email)) {
-    showAlert("Invalid email format!", "❌", "error");
-    return false;
-  }
-  if (user.picture && !urlRegex.test(user.picture)) {
-    showAlert("Invalid URL format for picture!", "❌", "error");
-    return false;
-  }
-
-  return true;
-}
 
 export function showAlert(
   msg: string,
@@ -55,7 +30,6 @@ function handleError(error: AxiosError<ResponseType>, defaultMessage: string) {
 }
 
 export async function addUser(user: UserType, baseUrl: string) {
-  if (!validateUser(user)) return;
 
   try {
     user.userId = uuidv4();
@@ -71,7 +45,7 @@ export async function addUser(user: UserType, baseUrl: string) {
 
 export async function updateUser(user: UserType, baseUrl: string) {
   console.log(user);
-  if (!validateUser(user)) return;
+
 
   try {
     const res = await axios.put<ResponseType>(`${baseUrl}/api/v1/user`, user);
@@ -103,38 +77,7 @@ export async function deleteUser(userId: string, baseUrl: string) {
   }
 }
 
-function validateDriver(driver: DriverType): boolean {
-  const nameRegex = /^[a-zA-Z\s]+$/;
-  const phoneRegex = /^[0-9]{10}$/; // Assuming phone number is 10 digits
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
-  if (!driver.driverName || !nameRegex.test(driver.driverName)) {
-    showAlert(
-      "Invalid name! Name should only contain letters and spaces.",
-      "❌",
-      "error"
-    );
-    return false;
-  }
-  if (!driver.driverPhone || !phoneRegex.test(driver.driverPhone)) {
-    showAlert(
-      "Invalid phone number! Phone number should be 10 digits.",
-      "❌",
-      "error"
-    );
-    return false;
-  }
-  if (!driver.driverEmail || !emailRegex.test(driver.driverEmail)) {
-    showAlert("Invalid email format!", "❌", "error");
-    return false;
-  }
-
-  return true;
-}
-
 export async function addDriver(driver: DriverType, baseUrl: string) {
-  if (!validateDriver(driver)) return;
-
   try {
     driver.driverId = uuidv4();
     const res = await axios.post<ResponseType>(
@@ -151,8 +94,6 @@ export async function addDriver(driver: DriverType, baseUrl: string) {
 }
 
 export async function updateDriver(driver: DriverType, baseUrl: string) {
-  if (!validateDriver(driver)) return;
-
   try {
     const res = await axios.put<ResponseType>(
       `${baseUrl}/api/v1/driver`,

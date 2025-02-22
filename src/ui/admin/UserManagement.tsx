@@ -3,7 +3,7 @@ import UserType from "../../types/UserType"
 import ResponseType from "../../types/ResponseType"
 import axios from "axios"
 import { Toaster } from "react-hot-toast"
-import { addUser, updateUser, deleteUser, } from "../../util/CommonUtils"
+import { addUser, updateUser, deleteUser, showAlert, } from "../../util/CommonUtils"
 
 
 const UserManagement: FC = () => {
@@ -12,6 +12,9 @@ const UserManagement: FC = () => {
     const [currentUser, setCurrentUser] = useState<UserType>({ userId: '', name: '', email: '', picture: '' });
     const [isOpen, setIsOpen] = useState(false);
     const baseURL = import.meta.env.VITE_BASE_URL;
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const urlRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=.]*)?$/;
 
     useEffect(() => {
 
@@ -63,9 +66,14 @@ const UserManagement: FC = () => {
                     <button
                         className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-200"
                         onClick={async () => {
-                            addUser(user, baseURL)
-                            setUsers(prevUsers => prevUsers ? [...prevUsers, user] : [user]);
-                            setUser({ userId: '', name: '', email: '', picture: '' });
+                            if (nameRegex.test(user.name) && emailRegex.test(user.email) && urlRegex.test(user.picture)) {
+                                addUser(user, baseURL)
+                                setUsers(prevUsers => prevUsers ? [...prevUsers, user] : [user]);
+                                setUser({ userId: '', name: '', email: '', picture: '' });
+                            } else {
+                                showAlert("Invalid input! Please check the fields.", "❌", "error");
+                            }
+
                         }}
 
                     >
@@ -141,9 +149,14 @@ const UserManagement: FC = () => {
                                                     <button
                                                         className="m-2 mt-4 bg-green-500 text-white px-4 py-2 rounded-md"
                                                         onClick={() => {
-                                                            updateUser(currentUser, baseURL);
-                                                            setUsers(users?.map((u) => u.userId === currentUser.userId ? currentUser : u));
-                                                            setIsOpen(false);
+                                                            if (nameRegex.test(currentUser.name) && emailRegex.test(currentUser.email) && urlRegex.test(currentUser.picture)) {
+                                                                updateUser(currentUser, baseURL);
+                                                                setUsers(users?.map((u) => u.userId === currentUser.userId ? currentUser : u));
+                                                                setIsOpen(false);
+                                                            } else {
+                                                                showAlert("Invalid input! Please check the fields.", "❌", "error");
+                                                            }
+
                                                         }
                                                         }
 
