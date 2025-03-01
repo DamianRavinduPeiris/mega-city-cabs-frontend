@@ -1,17 +1,15 @@
 import { FC, useEffect, useState } from "react";
 import VehicleType from "../../types/VehicleType";
-import ResponseType from "../../types/ResponseType";
-import axios from "axios";
 import { Toaster } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import { addVehicle, updateVehicle, deleteVehicle, showAlert } from "../../util/CommonUtils";
+import { addVehicle, updateVehicle, deleteVehicle, fetchVehicles, showAlert } from "../../util/CommonUtils";
 
 const VehicleManagement: FC = () => {
   const vehicleIdRegex = /^[A-Za-z0-9-]+$/;
   const vehicleNameRegex = /^[A-Za-z\s]+$/;
   const vehicleMakeYearRegex = /^\d{4}$/;
   const vehicleNumberPlateRegex = /^[A-Za-z0-9-]+$/;
-  const [vehicles, setVehicles] = useState<VehicleType[]>();
+  const [vehicles, setVehicles] = useState<VehicleType[]>([]);
   const [vehicle, setVehicle] = useState<VehicleType>({
     vehicleId: '',
     vehicleName: '',
@@ -29,19 +27,11 @@ const VehicleManagement: FC = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const baseURL = import.meta.env.VITE_BASE_URL;
-  async function fetchVehicles() {
-    axios.get<ResponseType>(`${baseURL}/api/v1/vehicle`)
-      .then((res) => {
-        console.log(res.data.data);
-        setVehicles(res.data.data as VehicleType[]);
-      }).catch((er) => {
-        console.log('error', er);
-      });
-  }
-  useEffect(() => {
-    fetchVehicles();
 
-  }, []);
+  useEffect(() => {
+    fetchVehicles(baseURL, setVehicles);
+
+  }, [baseURL]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,7 +41,7 @@ const VehicleManagement: FC = () => {
   };
 
   const handleAddVehicle = async () => {
-    if (vehicleIdRegex.test(vehicle.vehicleId) && vehicleNameRegex.test(vehicle.vehicleName) && vehicleMakeYearRegex.test(vehicle.vehicleMakeYear) && vehicleNumberPlateRegex.test(vehicle.vehicleNumberPlate)) {
+    if (vehicleNameRegex.test(vehicle.vehicleName) && vehicleMakeYearRegex.test(vehicle.vehicleMakeYear) && vehicleNumberPlateRegex.test(vehicle.vehicleNumberPlate)) {
       if (vehicle.vehicleName && vehicle.vehicleMakeYear && vehicle.vehicleNumberPlate && vehicle.vehicleImage) {
         const formData = new FormData();
         formData.append('vehicleId', uuidv4());
@@ -68,7 +58,7 @@ const VehicleManagement: FC = () => {
           vehicleNumberPlate: '',
           vehicleImage: '',
         });
-        fetchVehicles();
+        fetchVehicles(baseURL, setVehicles);
       } else {
         showAlert("Invalid input! Please check the fields.", "❌", "error");
       }

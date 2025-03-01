@@ -1,22 +1,71 @@
 import { useEffect, useState } from "react";
 import VehicleList from "./dashboard/VehicleList";
-import Map from "./dashboard/Map";
 import Sidebar from "./dashboard/Sidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
 import { useNavigate } from "react-router-dom";
+import { showAlert } from "../util/CommonUtils";
+import { Toaster } from "react-hot-toast";
+import MapComponent from "./dashboard/MapComponent";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [destination, setDestination] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const [pickup, setPickup] = useState<[number, number] | null>(null);
+  const [destination, setDestination] = useState<[number, number] | null>(null);
+  const [pickupCity, setPickupCity] = useState<string>("");
+  const [destinationCity, setDestinationCity] = useState<string>("");
+  const OPEN_STREET_MAP_URL = import.meta.env.VITE_OPENSTREET_MAP_URL;
 
   useEffect(() => {
     if (user.name === undefined) {
       navigate("/");
     }
   });
+  const fetchCoordinates = async (city: string): Promise<[number, number]> => {
+    try {
+      const res = await axios.get(
+        OPEN_STREET_MAP_URL,
+        {
+          params: {
+            q: city,
+            format: "json",
+            limit: 1,
+          },
+        }
+      );
+
+      if (res.data && res.data.length > 0) {
+        const returnedCity = res.data[0];
+
+        if (returnedCity.lat !== "0" && returnedCity.lon !== "0") {
+          console.log("Valid city:", city);
+          setIsLoading(false);
+          return [parseFloat(returnedCity.lat), parseFloat(returnedCity.lon)];
+        } else {
+          console.log("Invalid city name! Invalid coordinates.");
+          showAlert("Invalid city name!", "⛔", "error");
+          setIsLoading(false);
+          return [0, 0];
+        }
+      } else {
+        // Handle cases with no result
+        console.log("Invalid city name! No results returned.");
+        showAlert("Invalid city name!", "⛔", "error");
+        setIsLoading(false);
+        return [0, 0];
+      }
+    } catch (error) {
+      console.error("Error fetching coordinates:", error);
+      setIsLoading(false);
+      return [0, 0];
+    }
+  };
+
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -36,20 +85,9 @@ const Dashboard = () => {
               />
             </button>
             <h1 className="text-2xl font-bold text-black">MegaCity Cabs</h1>
+            <Toaster />
           </div>
           <div className="flex items-center space-x-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                className="bg-gray-100 rounded-full py-2 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <img
-                src="/placeholder.svg?height=18&width=18"
-                alt="Search"
-                className="absolute right-3 top-2.5 w-5 h-5"
-              />
-            </div>
             <img
               src={user.picture}
               alt="User profile"
@@ -62,36 +100,68 @@ const Dashboard = () => {
           <div className="max-w-6xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
               <h2 className="text-2xl font-semibold mb-4">
-                Welcome {user.name}
+                Welcome {user.name} !
               </h2>
-              <div className="flex items-center bg-gray-100 p-3 rounded-lg mb-4">
-                <img
-                  src="/placeholder.svg?height=20&width=20"
-                  alt="Location"
-                  className="w-5 h-5 mr-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Enter your destination"
-                  className="bg-transparent w-full focus:outline-none"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                />
-                <button className="bg-black text-white p-2 rounded-full hover:bg-gray-800 transition duration-300">
+              <div className="flex flex-col items-center bg-gray-100 p-3 rounded-lg mb-4">
+                <div className="flex items-center w-full mb-2">
                   <img
-                    src="/placeholder.svg?height=20&width=20"
-                    alt="Search"
-                    className="w-5 h-5"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSx1eKFK9J1rqMerlDRpHvB_5zAnB1w0TQzA&s?height=20&width=20"
+                    alt="Location"
+                    className="w-5 h-5 mr-2"
                   />
-                </button>
+                  <input
+                    type="text"
+                    placeholder="Where to pick you up?"
+                    className="bg-transparent w-full focus:outline-none m-5"
+                    value={pickupCity}
+                    onChange={(e) => setPickupCity(e.target.value)}
+                  />
+                </div>
+                <div className="flex items-center w-full">
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRB6XdL90OmxIQQfkh8_iw_UG5QfyX4lIPfA&s?height=20&width=20"
+                    alt="Destination"
+                    className="w-5 h-5 mr-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Enter your destination."
+                    className="bg-transparent w-full focus:outline-none m-5"
+                    value={destinationCity}
+                    onChange={(e) => setDestinationCity(e.target.value)}
+                  />
+                </div>
               </div>
               <div className="flex items-center text-sm text-gray-500">
-                <img
-                  src="/placeholder.svg?height=16&width=16"
-                  alt="Clock"
-                  className="w-4 h-4 mr-2"
-                />
-                <span>Estimated arrival time: 15 minutes</span>
+                <button className="bg-black text-white px-4 py-2 rounded-lg" onClick={() => {
+                  const cityRegex = /^[A-Za-z]{3,}$/;
+
+                  if (pickupCity === "" || destinationCity === "") {
+                    showAlert("Please enter both pickup and destination locations!", "⛔", "error");
+                    return;
+                  }
+
+                  if (!cityRegex.test(pickupCity)) {
+                    showAlert("Pickup city must be at least 3 letters and contain no numbers or symbols.", "⛔", "error");
+                    return;
+                  }
+
+                  if (!cityRegex.test(destinationCity)) {
+                    showAlert("Destination city must be at least 3 letters and contain no numbers or symbols.", "⛔", "error");
+                    return;
+                  }
+
+                  setIsLoading(true);
+                  fetchCoordinates(pickupCity).then((coords) => {
+                    setPickup(coords);
+                  });
+                  fetchCoordinates(destinationCity).then((coords) => {
+                    setDestination(coords);
+                  });
+                }}>
+                  Search
+                </button>
+
               </div>
             </div>
 
@@ -100,7 +170,18 @@ const Dashboard = () => {
                 <VehicleList />
               </div>
               <div className="lg:col-span-1">
-                <Map />
+                {isLoading ? (
+                  <>
+                    <h1 className="text-2xl font-semibold mb-4">Loading Map...</h1>
+                    <div className="flex justify-center items-center h-full">
+                      <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"
+                        style={{ borderColor: "black white black white" }}></div>
+                    </div>
+                  </>
+                ) : (
+                  pickup && destination && <MapComponent pickup={pickup} destination={destination} />
+                )}
+
               </div>
             </div>
           </div>
