@@ -38,7 +38,7 @@ const VehicleList = () => {
               </div>
             </div>
             <div className="text-right">
-              <p className="font-semibold">{vehicle.vehicleMakeYear}</p>
+              <p className="font-semibold">LKR Per KM : {Math.floor(Math.random() * 25) + 175}</p> 
               <button className="mt-2 bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800 transition duration-300">
                 Book Now
               </button>
