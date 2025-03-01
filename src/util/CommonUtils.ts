@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import UserType from "../types/UserType";
 import ResponseType from "../types/ResponseType";
 import DriverType from "../types/DriverType";
+import VehicleType from "../types/VehicleType";
 
 export function showAlert(
   msg: string,
@@ -147,5 +148,85 @@ export async function getDriver(driverId: string, baseUrl: string) {
       e as AxiosError<ResponseType>,
       "Failed to fetch Driver details!"
     );
+  }
+}
+export async function addVehicle(formData: FormData, baseUrl: string) {
+  try {
+    const res = await axios.post<ResponseType>(
+      `${baseUrl}/api/v1/vehicle`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    if (res.data.status === 201) {
+      showAlert("Vehicle added successfully!", "🎉", "success");
+    }
+    console.log(res);
+  } catch (e) {
+    handleError(e as AxiosError<ResponseType>, "Failed to add Vehicle!");
+  }
+}
+
+export async function updateVehicle(formData: FormData, baseUrl: string) {
+  try {
+    const res = await axios.put<ResponseType>(
+      `${baseUrl}/api/v1/vehicle`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    if (res.data.status === 201) {
+      showAlert("Vehicle updated successfully!", "🎉", "success");
+    }
+    console.log(res);
+  } catch (e) {
+    handleError(e as AxiosError<ResponseType>, "Failed to update Vehicle!");
+  }
+}
+
+// Delete vehicle by ID
+export async function deleteVehicle(vehicleId: string, baseUrl: string) {
+  if (!vehicleId) {
+    showAlert("Vehicle ID is required for deletion.", "❌", "error");
+    return;
+  }
+
+  try {
+    const res = await axios.delete<ResponseType>(
+      `${baseUrl}/api/v1/vehicle?vehicleId=${vehicleId}`
+    );
+    if (res.data.status === 204) {
+      showAlert("Vehicle deleted successfully!", "🎉", "success");
+    }
+    console.log(res);
+  } catch (e) {
+    handleError(e as AxiosError<ResponseType>, "Failed to delete vehicle");
+  }
+}
+
+// Fetch vehicle details by ID
+export async function getVehicle(vehicleId: string, baseUrl: string) {
+  if (!vehicleId) {
+    showAlert("Vehicle ID is required.", "❌", "error");
+    return;
+  }
+
+  try {
+    const res = await axios.get<ResponseType>(
+      `${baseUrl}/api/v1/vehicle?vehicleId=${vehicleId}`
+    );
+    if (res.data.status === 200) {
+      showAlert("Vehicle details fetched successfully!", "🎉", "success");
+      return res.data.data;
+    }
+    console.log(res);
+  } catch (e) {
+    handleError(e as AxiosError<ResponseType>, "Failed to fetch Vehicle details!");
   }
 }
