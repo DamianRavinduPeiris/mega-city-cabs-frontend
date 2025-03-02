@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
+
 import VehicleType from "../../types/VehicleType";
 import { fetchVehicles } from "../../util/CommonUtils";
 import TravelDistanceCard from "./TravelDistanceCard";
 const baseURL = import.meta.env.VITE_BASE_URL;
 
-interface VehicleListProps {
-  originCity: string;
-  destinationCity: string;
-  distance: string;
-  duration: string;
-}
-
-const VehicleList = ({ originCity, destinationCity, distance, duration }: VehicleListProps) => {
+const VehicleList = () => {
   const [vehicles, setVehicles] = useState<VehicleType[]>([]);
 
   useEffect(() => {
@@ -21,16 +15,15 @@ const VehicleList = ({ originCity, destinationCity, distance, duration }: Vehicl
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
       <h2 className="text-2xl font-semibold mb-4">Distance Estimation.</h2>
-
       <TravelDistanceCard
-        originCity={originCity}
-        destinationCity={destinationCity}
-        distance={distance}
-        duration={duration}
+        originCity="San Francisco"
+        destinationCity="Chicago"
+        distance="2,100 miles"
+        duration="4h 30m"
       />
 
       <div className="space-y-4 mt-6">
-        <h2 className="text-2xl font-semibold mb-4">Available Vehicles.</h2>
+      <h2 className="text-2xl font-semibold mb-4">Available Vehicles.</h2>
         {vehicles.map((vehicle) => (
           <div
             key={vehicle.vehicleId}
