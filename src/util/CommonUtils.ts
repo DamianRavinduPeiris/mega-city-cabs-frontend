@@ -31,7 +31,6 @@ function handleError(error: AxiosError<ResponseType>, defaultMessage: string) {
 }
 
 export async function addUser(user: UserType, baseUrl: string) {
-
   try {
     user.userId = uuidv4();
     const res = await axios.post<ResponseType>(`${baseUrl}/api/v1/user`, user);
@@ -46,7 +45,6 @@ export async function addUser(user: UserType, baseUrl: string) {
 
 export async function updateUser(user: UserType, baseUrl: string) {
   console.log(user);
-
 
   try {
     const res = await axios.put<ResponseType>(`${baseUrl}/api/v1/user`, user);
@@ -157,7 +155,7 @@ export async function addVehicle(formData: FormData, baseUrl: string) {
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -177,7 +175,7 @@ export async function updateVehicle(formData: FormData, baseUrl: string) {
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -227,6 +225,28 @@ export async function getVehicle(vehicleId: string, baseUrl: string) {
     }
     console.log(res);
   } catch (e) {
-    handleError(e as AxiosError<ResponseType>, "Failed to fetch Vehicle details!");
+    handleError(
+      e as AxiosError<ResponseType>,
+      "Failed to fetch Vehicle details!"
+    );
   }
+}
+
+export async function fetchVehicles(
+  baseUrl: string,
+  setVehicles: React.Dispatch<React.SetStateAction<VehicleType[]>>
+) {
+  axios
+    .get<ResponseType>(`${baseUrl}/api/v1/vehicle`)
+    .then((res) => {
+      console.log(res.data.data);
+      setVehicles(res.data.data as VehicleType[]);
+    })
+    .catch((er) => {
+      handleError(
+        er as AxiosError<ResponseType>,
+        "Failed to fetch Vehicle details!"
+      );
+      console.log("error", er);
+    });
 }
