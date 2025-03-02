@@ -11,4 +11,5 @@ export default interface RideBookingType {
   duration: string;
   date: string;
   price: number;
+  distance: string;
 }

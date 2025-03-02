@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [destinationCity, setDestinationCity] = useState<string>("");
   const OPEN_STREET_MAP_URL = import.meta.env.VITE_OPENSTREET_MAP_URL;
   const baseURL = import.meta.env.VITE_BASE_URL;
+
   useEffect(() => {
     if (user.name === undefined) {
       navigate("/");
@@ -71,6 +72,15 @@ const Dashboard = () => {
     }
   };
 
+  function getDriverId(): string {
+    if (drivers && drivers.length > 0) {
+      const randomIndex = Math.floor(Math.random() * drivers.length);
+      return drivers[randomIndex].driverId;
+    }
+    return "";
+
+  }
+
   async function fetchDistanceInfo(pickupCity: string, destinationCity: string) {
     try {
 
@@ -95,6 +105,7 @@ const Dashboard = () => {
         showAlert("An error occurred while fetching drivers!", "⛔", "error");
         console.log('error', error.message, error.response?.data);
       });
+
   }, []);
 
 
@@ -221,7 +232,9 @@ const Dashboard = () => {
                     </div>
                   </>
                 ) : isSearched && pickupCity && destinationCity ? (
-                  <VehicleList originCity={pickupCity} destinationCity={destinationCity} distance={distance} duration={duration} />
+                  <>
+                    <VehicleList originCity={pickupCity} destinationCity={destinationCity} distance={distance} duration={duration} driverId={getDriverId()} />
+                  </>
                 ) : null}
               </div>
 
