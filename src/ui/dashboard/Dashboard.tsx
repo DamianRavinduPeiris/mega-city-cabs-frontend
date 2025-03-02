@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react";
-import VehicleList from "./dashboard/VehicleList";
-import Sidebar from "./dashboard/Sidebar";
+import VehicleList from "./VehicleList";
+import Sidebar from "./Sidebar";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/Store";
+import { RootState } from "../../redux/Store";
 import { useNavigate } from "react-router-dom";
-import { showAlert } from "../util/CommonUtils";
+import { showAlert } from "../../util/CommonUtils";
 import { Toaster } from "react-hot-toast";
-import MapComponent from "./dashboard/MapComponent";
+import MapComponent from "./MapComponent";
 import axios from "axios";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSearched, setSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const [pickup, setPickup] = useState<[number, number] | null>(null);
   const [destination, setDestination] = useState<[number, number] | null>(null);
   const [pickupCity, setPickupCity] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
+  const [distance, setDistance] = useState<string>("");
   const [destinationCity, setDestinationCity] = useState<string>("");
   const OPEN_STREET_MAP_URL = import.meta.env.VITE_OPENSTREET_MAP_URL;
-
+  const baseURL = import.meta.env.VITE_BASE_URL;
   useEffect(() => {
     if (user.name === undefined) {
       navigate("/");
@@ -52,7 +55,6 @@ const Dashboard = () => {
           return [0, 0];
         }
       } else {
-        // Handle cases with no result
         console.log("Invalid city name! No results returned.");
         showAlert("Invalid city name!", "⛔", "error");
         setIsLoading(false);
@@ -64,6 +66,22 @@ const Dashboard = () => {
       return [0, 0];
     }
   };
+
+  async function fetchDistanceInfo(pickupCity: string, destinationCity: string) {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(baseURL + `/api/v1/distance?origins=${pickupCity}&destinations=${destinationCity}`);
+      setDuration(response.data.data.rows[0].elements[0].duration.text);
+      setDistance(response.data.data.rows[0].elements[0].distance.text);
+      setIsLoading(false);
+    }
+    catch (error) {
+      showAlert("An error occurred while fetching distance info!", "⛔", "error");
+      console.error("Error fetching distance info:", error);
+    }
+  }
+
+
 
 
 
@@ -102,6 +120,7 @@ const Dashboard = () => {
               <h2 className="text-2xl font-semibold mb-4">
                 Welcome {user.name} !
               </h2>
+
               <div className="flex flex-col items-center bg-gray-100 p-3 rounded-lg mb-4">
                 <div className="flex items-center w-full mb-2">
                   <img
@@ -132,6 +151,7 @@ const Dashboard = () => {
                   />
                 </div>
               </div>
+
               <div className="flex items-center text-sm text-gray-500">
                 <button className="bg-black text-white px-4 py-2 rounded-lg" onClick={() => {
                   const cityRegex = /^[A-Za-z]{3,}$/;
@@ -152,12 +172,15 @@ const Dashboard = () => {
                   }
 
                   setIsLoading(true);
+                  console.log("Fetching coordinates for", pickupCity, destinationCity);
                   fetchCoordinates(pickupCity).then((coords) => {
                     setPickup(coords);
                   });
                   fetchCoordinates(destinationCity).then((coords) => {
                     setDestination(coords);
                   });
+                  setSearched(true);
+                  fetchDistanceInfo(pickupCity, destinationCity);
                 }}>
                   Search
                 </button>
@@ -167,7 +190,22 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <VehicleList />
+                {
+
+                  isLoading && isSearched ? <>
+
+                    <>
+                      <h1 className="text-2xl font-semibold mb-4">Loading Distance Estimations and Vehicles...</h1>
+                      <div className="flex justify-center items-center h-full">
+                        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"
+                          style={{ borderColor: "black white black white" }}></div>
+                      </div>
+                    </>
+
+                  </> : <VehicleList originCity={pickupCity} destinationCity={destinationCity} distance={distance} duration={duration} />
+                }
+
+
               </div>
               <div className="lg:col-span-1">
                 {isLoading ? (
@@ -179,11 +217,19 @@ const Dashboard = () => {
                     </div>
                   </>
                 ) : (
-                  pickup && destination && <MapComponent pickup={pickup} destination={destination} />
+                  pickup && destination &&
+                  <>
+
+                    <h1 className="text-2xl font-semibold mb-4">Map.</h1>
+                    <MapComponent pickup={pickup} destination={destination} />
+
+                  </>
                 )}
 
               </div>
             </div>
+
+
           </div>
         </main>
       </div>

@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-
 import VehicleType from "../../types/VehicleType";
 import { fetchVehicles } from "../../util/CommonUtils";
-
+import TravelDistanceCard from "./TravelDistanceCard";
 const baseURL = import.meta.env.VITE_BASE_URL;
 
-const VehicleList = () => {
+interface VehicleListProps {
+  originCity: string;
+  destinationCity: string;
+  distance: string;
+  duration: string;
+}
+
+const VehicleList = ({ originCity, destinationCity, distance, duration }: VehicleListProps) => {
   const [vehicles, setVehicles] = useState<VehicleType[]>([]);
 
   useEffect(() => {
@@ -14,9 +20,17 @@ const VehicleList = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
-      <h2 className="text-2xl font-semibold mb-4">Available Vehicles</h2>
+      <h2 className="text-2xl font-semibold mb-4">Distance Estimation.</h2>
+
+      <TravelDistanceCard
+        originCity={originCity}
+        destinationCity={destinationCity}
+        distance={distance}
+        duration={duration}
+      />
 
       <div className="space-y-4 mt-6">
+        <h2 className="text-2xl font-semibold mb-4">Available Vehicles.</h2>
         {vehicles.map((vehicle) => (
           <div
             key={vehicle.vehicleId}
@@ -38,7 +52,7 @@ const VehicleList = () => {
               </div>
             </div>
             <div className="text-right">
-              <p className="font-semibold">LKR Per KM : {Math.floor(Math.random() * 25) + 175}</p> 
+              <p className="font-semibold">LKR Per KM : {Math.floor(Math.random() * 25) + 175}</p>
               <button className="mt-2 bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800 transition duration-300">
                 Book Now
               </button>

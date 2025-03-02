@@ -1,5 +1,5 @@
 import "./App.css";
-import Dashboard from "./ui/Dashboard";
+import Dashboard from "./ui/dashboard/Dashboard";
 import Footer from "./ui/Footer";
 import Hero from "./ui/Hero";
 import AdminDashboard from "./ui/admin/AdminDashBoard";
