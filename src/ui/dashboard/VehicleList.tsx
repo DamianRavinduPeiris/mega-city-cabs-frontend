@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/Store";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import DateTimePicker from "./DateTimePicker";
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 interface VehicleListProps {
@@ -21,6 +22,7 @@ interface VehicleListProps {
 
 const VehicleList = ({ originCity, destinationCity, distance, duration, driverId }: VehicleListProps) => {
   const [vehicles, setVehicles] = useState<VehicleType[]>([]);
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | undefined>(new Date())
   const user = useSelector((state: RootState) => state.user);
   const bookingDetails = useSelector((state: RootState) => state.rideBooking);
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ const VehicleList = ({ originCity, destinationCity, distance, duration, driverId
       pickUpCity: originCity,
       destinationCity: destinationCity,
       duration: duration,
-      date: new Date().toISOString(),
+      date: selectedDateTime?.toISOString() || '',
       price: totalPrice,
       distance: distance,
     }
@@ -56,7 +58,9 @@ const VehicleList = ({ originCity, destinationCity, distance, duration, driverId
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
-      <h2 className="text-2xl font-semibold mb-4">Distance Estimation.</h2>
+      <h2 className="text-2xl font-semibold mb-4">Select a Date and Time.</h2>
+      <DateTimePicker value={selectedDateTime} onChange={setSelectedDateTime}/>
+      <h2 className="text-2xl font-semibold m-2">Distance Estimation.</h2>
 
       <TravelDistanceCard
         originCity={originCity}

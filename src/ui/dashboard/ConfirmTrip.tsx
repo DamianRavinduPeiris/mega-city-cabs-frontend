@@ -1,21 +1,43 @@
-"use client"
-
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Header from "../Header"
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/Store";
-
+import axios, { AxiosError } from "axios";
+import DriverType from "../../types/DriverType";
+import ResponseType from "../../types/ResponseType";
+import { showAlert } from "../../util/CommonUtils";
+import { useNavigate } from "react-router-dom";
 export default function ConfirmTrip() {
+    const navigate = useNavigate();
     const [cardNumber, setCardNumber] = useState("")
     const [expiry, setExpiry] = useState("")
     const [cvv, setCvv] = useState("")
     const [isPaymentComplete, setIsPaymentComplete] = useState(false)
+    const [driver, setDriver] = useState<DriverType | null>(null)
+    const rideDetails = useSelector((state: RootState) => state.rideBooking);
+    const baseURL = import.meta.env.VITE_BASE_URL;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Here you would typically process the payment
-        // For this example, we'll just set a flag
+        try {
+            const res = await axios.post<ResponseType>(`${baseURL}/api/v1/bookings`, rideDetails)
+            if (res.data.status === 201) {
+                showAlert("Booking Confirmed!", "🎉", "success")
+            }
+            setTimeout(() => {
+                console.log('rideBookingData', bookingDetails)
+                showAlert('Navigating you to the booking confirmation page..', '✅', 'success');
+                navigate('/dashboard');
+            }, 1000);
+
+        } catch (e) {
+            const er = e as AxiosError<ResponseType>
+            if (er.response?.data?.status === 500) {
+                showAlert("Something went wrong!", "❌", "error")
+            }
+        }
+
         setIsPaymentComplete(true)
     }
 
@@ -33,6 +55,22 @@ export default function ConfirmTrip() {
         return numbers
     }
     const bookingDetails = useSelector((state: RootState) => state.rideBooking);
+    useEffect(() => {
+        axios.get<ResponseType>(`${baseURL}/api/v1/driver?driverId=${bookingDetails.driverId}`)
+            .then((response) => {
+                if (response.data.status === 200) {
+                    const driver = response.data.data as DriverType
+                    setDriver(driver)
+                }
+            })
+            .catch((error) => {
+                const er = error as AxiosError<ResponseType>;
+                if (er.status === 404) {
+                    showAlert("Driver not Available.", "❌", "error")
+                }
+            })
+
+    }, [])
     return (
         <>
             <Header />
@@ -78,6 +116,10 @@ export default function ConfirmTrip() {
                                 <span className="text-gray-500">⏰</span>
                                 <span>{bookingDetails.duration}</span>
                             </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-gray-500">📅</span>
+                                <span>{new Date(bookingDetails.date).toDateString()}</span>
+                            </div>
                         </div>
 
                         <div className="h-px w-full bg-gray-200 my-2"></div>
@@ -86,13 +128,31 @@ export default function ConfirmTrip() {
                             <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                                 <span className="text-sm">👤</span>
                             </div>
-                            <div>
-                                <p className="text-sm font-medium">Driver ID : {bookingDetails.driverId}</p>
-                                <p className="text-xs text-gray-500">
-                                    Vehicle : ({bookingDetails.vehicleName})
-                                    Number Plate :  {bookingDetails.vehicleNumberPlate}
-                                </p>
+                            <div className="bg-white shadow-lg rounded-2xl p-4 w-full max-w-md">
+                                <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                                    Driver Details
+                                </h2>
+                                <div className="mt-3 space-y-2">
+                                    <p className="text-sm font-medium flex items-center gap-2">
+                                        ⛔ <span>{driver?.driverName}</span>
+                                    </p>
+                                    <p className="text-sm font-medium flex items-center gap-2">
+                                        📞 <span>{driver?.driverPhone}</span>
+                                    </p>
+                                    <p className="text-sm font-medium flex items-center gap-2">
+                                        📩 <span>{driver?.driverEmail}</span>
+                                    </p>
+                                </div>
+                                <div className="mt-4 p-3 bg-gray-100 rounded-lg">
+                                    <p className="text-sm text-gray-600">
+                                        <strong>Vehicle:</strong> {bookingDetails.vehicleName}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                        <strong>Number Plate:</strong> {bookingDetails.vehicleNumberPlate}
+                                    </p>
+                                </div>
                             </div>
+
                         </div>
 
                         <div className="h-px w-full bg-gray-200 my-2"></div>

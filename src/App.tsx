@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Hero />} />
-        <Route path="/confirm-trip" element={<ConfirmTrip price={100} currency={"LKR"}  pickup="Galle" destination="Colombo" distance="5KM" duration="5h" driver="Damian" vehicle="Wagon R" licensePlate="DAT-000" />} />
+        <Route path="/confirm-trip" element={<ConfirmTrip />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
