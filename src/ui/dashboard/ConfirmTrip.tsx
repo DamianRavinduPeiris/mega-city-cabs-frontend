@@ -16,12 +16,13 @@ export default function ConfirmTrip() {
     const [isPaymentComplete, setIsPaymentComplete] = useState(false)
     const [driver, setDriver] = useState<DriverType | null>(null)
     const rideDetails = useSelector((state: RootState) => state.rideBooking);
+    const userDetails = useSelector((state: RootState) => state.user);
     const baseURL = import.meta.env.VITE_BASE_URL;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            const res = await axios.post<ResponseType>(`${baseURL}/api/v1/bookings`, rideDetails)
+            const res = await axios.post<ResponseType>(`${baseURL}/api/v1/bookings?userEmail=${userDetails.email}`, rideDetails)
             if (res.data.status === 201) {
                 showAlert("Booking Confirmed!", "🎉", "success")
             }
