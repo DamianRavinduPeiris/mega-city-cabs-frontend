@@ -7,12 +7,16 @@ import { useNavigate } from "react-router-dom";
 import { showAlert } from "../../util/CommonUtils";
 import { Toaster } from "react-hot-toast";
 import MapComponent from "./MapComponent";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import DriverType from "../../types/DriverType";
+import ResponseType from "../../types/ResponseType";
+
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearched, setSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [drivers, setDrivers] = useState<DriverType[]>();
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const [pickup, setPickup] = useState<[number, number] | null>(null);
@@ -23,6 +27,7 @@ const Dashboard = () => {
   const [destinationCity, setDestinationCity] = useState<string>("");
   const OPEN_STREET_MAP_URL = import.meta.env.VITE_OPENSTREET_MAP_URL;
   const baseURL = import.meta.env.VITE_BASE_URL;
+
   useEffect(() => {
     if (user.name === undefined) {
       navigate("/");
@@ -67,22 +72,41 @@ const Dashboard = () => {
     }
   };
 
+  function getDriverId(): string {
+    if (drivers && drivers.length > 0) {
+      const randomIndex = Math.floor(Math.random() * drivers.length);
+      return drivers[randomIndex].driverId;
+    }
+    return "";
+
+  }
+
   async function fetchDistanceInfo(pickupCity: string, destinationCity: string) {
     try {
-      setIsLoading(true);
+
       const response = await axios.get(baseURL + `/api/v1/distance?origins=${pickupCity}&destinations=${destinationCity}`);
       setDuration(response.data.data.rows[0].elements[0].duration.text);
       setDistance(response.data.data.rows[0].elements[0].distance.text);
       setIsLoading(false);
+      setSearched(false);
     }
     catch (error) {
       showAlert("An error occurred while fetching distance info!", "⛔", "error");
       console.error("Error fetching distance info:", error);
     }
   }
+  useEffect(() => {
+    axios.get<{ data: DriverType[] }>(`${baseURL}/api/v1/driver`)
+      .then((res) => {
+        setDrivers(res.data.data as DriverType[]);
+        console.log(drivers)
+      }).catch((er) => {
+        const error = er as AxiosError<ResponseType>
+        showAlert("An error occurred while fetching drivers!", "⛔", "error");
+        console.log('error', error.message, error.response?.data);
+      });
 
-
-
+  }, []);
 
 
   return (
@@ -172,16 +196,25 @@ const Dashboard = () => {
                   }
 
                   setIsLoading(true);
-                  console.log("Fetching coordinates for", pickupCity, destinationCity);
-                  fetchCoordinates(pickupCity).then((coords) => {
-                    setPickup(coords);
-                  });
-                  fetchCoordinates(destinationCity).then((coords) => {
-                    setDestination(coords);
-                  });
                   setSearched(true);
-                  fetchDistanceInfo(pickupCity, destinationCity);
-                }}>
+
+                  Promise.all([fetchCoordinates(pickupCity), fetchCoordinates(destinationCity)])
+                    .then(([pickupCoords, destinationCoords]) => {
+                      setPickup(pickupCoords);
+                      setDestination(destinationCoords);
+
+                      return fetchDistanceInfo(pickupCity, destinationCity);
+                    })
+                    .then(() => {
+                      setIsLoading(false);
+                      setSearched(true);
+                    })
+                    .catch(() => {
+                      setIsLoading(false);
+                      setSearched(false);
+                    });
+                }}
+                >
                   Search
                 </button>
 
@@ -190,23 +223,21 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                {
-
-                  isLoading && isSearched ? <>
-
-                    <>
-                      <h1 className="text-2xl font-semibold mb-4">Loading Distance Estimations and Vehicles...</h1>
-                      <div className="flex justify-center items-center h-full">
-                        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"
-                          style={{ borderColor: "black white black white" }}></div>
-                      </div>
-                    </>
-
-                  </> : <VehicleList originCity={pickupCity} destinationCity={destinationCity} distance={distance} duration={duration} />
-                }
-
-
+                {isLoading ? (
+                  <>
+                    <h1 className="text-2xl font-semibold mb-4">Loading Distance Estimations and Vehicles...</h1>
+                    <div className="flex justify-center items-center h-full">
+                      <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"
+                        style={{ borderColor: "black white black white" }}></div>
+                    </div>
+                  </>
+                ) : isSearched && pickupCity && destinationCity ? (
+                  <>
+                    <VehicleList originCity={pickupCity} destinationCity={destinationCity} distance={distance} duration={duration} driverId={getDriverId()} />
+                  </>
+                ) : null}
               </div>
+
               <div className="lg:col-span-1">
                 {isLoading ? (
                   <>
@@ -216,24 +247,21 @@ const Dashboard = () => {
                         style={{ borderColor: "black white black white" }}></div>
                     </div>
                   </>
-                ) : (
-                  pickup && destination &&
+                ) : isSearched && pickup && destination && pickupCity && destinationCity ? (
                   <>
-
-                    <h1 className="text-2xl font-semibold mb-4">Map.</h1>
+                    <h1 className="text-2xl font-semibold mb-4">Map</h1>
                     <MapComponent pickup={pickup} destination={destination} />
-
                   </>
-                )}
-
+                ) : null}
               </div>
+
             </div>
 
 
           </div>
         </main>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

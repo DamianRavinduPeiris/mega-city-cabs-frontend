@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./UserSlice";
+import rideBookingReducer from "./RideBookingSlice";
 const store = configureStore({
   reducer: {
-    user: userReducer, 
+    user: userReducer,
+    rideBooking: rideBookingReducer,
   },
 });
 
