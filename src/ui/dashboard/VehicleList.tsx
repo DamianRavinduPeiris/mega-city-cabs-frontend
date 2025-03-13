@@ -60,7 +60,7 @@ const VehicleList = ({ originCity, destinationCity, distance, duration, driverId
       });
 
       toast.promise(alert, {
-        loading: 'Loading',
+        loading: 'Loading...',
         success: 'Trip Details are confirmed!',
         error: 'An error occurred while confirming trip details!',
       });
