@@ -1,50 +1,18 @@
-# React + TypeScript + Vite
+# Megacity Cabs
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains the frontend implementation for the CIS6003 Advanced Programming module.  
+The backend for this project can be found in [here](https://github.com/DamianRavinduPeiris/mega-city-cabs-backend).
 
-Currently, two official plugins are available:
+## Application Screenshots.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Home Page.  
+![Home Page](https://github.com/user-attachments/assets/9ee4c1df-8365-4f07-b18e-e40b40d11581)
 
-## Expanding the ESLint configuration
+### User Dashboard .
+![User Dashboard](https://github.com/user-attachments/assets/2a8b414f-4ab3-4ff4-afc6-b9bcee2b8054)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Vehicle Selection & Travel Metadata.  
+![Vehicle Selection & Travel Metadata](https://github.com/user-attachments/assets/caadab48-1d79-459c-9bcc-ee136a717edc)
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### Checkout & Trip Confirmation . 
+![Checkout & Trip Confirmation](https://github.com/user-attachments/assets/032e975c-5f80-4c63-b15b-bc91a8c36192)
