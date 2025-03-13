@@ -1,7 +1,7 @@
-# `Megacity Cabs`
+# `Megacity Cabs.`
 
-- This repository contains the frontend implementation for the CIS6003 Advanced Programming module.  
--  The backend for this project can be found in [here](https://github.com/DamianRavinduPeiris/mega-city-cabs-backend).
+- This repository contains the `frontend implementation` for the `CIS6003` `Advanced Programming module.`  
+-  The `backend` for this project can be found in [here](https://github.com/DamianRavinduPeiris/mega-city-cabs-backend).
 
 ### `Application Screenshots.`
 
