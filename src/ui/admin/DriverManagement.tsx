@@ -23,7 +23,7 @@ const DriverManagement: FC = () => {
       }).catch((er) => {
         console.log('error', er);
       });
-  }, []);
+  });
 
   return (
     <div className="bg-white border border-gray-200 shadow-md rounded-lg p-6">

@@ -9,6 +9,7 @@ const userSlice = createSlice({
   reducers: {
     // Action to log in and set user data
     loginUser: (state, action: PayloadAction<UserType>) => {
+      console.log("State : ", state);
       return action.payload; // Store user data
     },
     // Action to log out

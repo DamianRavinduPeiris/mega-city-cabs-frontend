@@ -71,7 +71,7 @@ export default function ConfirmTrip() {
                 }
             })
 
-    }, [])
+    }, [baseURL, bookingDetails.driverId])
     return (
         <>
             <Header />

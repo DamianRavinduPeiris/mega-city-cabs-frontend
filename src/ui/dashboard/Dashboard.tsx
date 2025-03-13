@@ -106,7 +106,7 @@ const Dashboard = () => {
         console.log('error', error.message, error.response?.data);
       });
 
-  }, []);
+  }, [baseURL, drivers]);
 
 
   return (

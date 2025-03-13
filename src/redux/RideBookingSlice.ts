@@ -8,6 +8,7 @@ const rideBookingSlice = createSlice({
   initialState: rideBookingInitialState,
   reducers: {
     saveRideBookingData: (state, action: PayloadAction<RideBookingType>) => {
+      console.log("State : ", state);
       return action.payload;
     },
     deleteRideBookingData: () => {
