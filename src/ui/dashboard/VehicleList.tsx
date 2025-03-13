@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import VehicleType from "../../types/VehicleType";
-import { fetchVehicles, showAlert } from "../../util/CommonUtils";
+import { fetchVehicles } from "../../util/CommonUtils";
+import { toast } from "react-hot-toast";
 import TravelDistanceCard from "./TravelDistanceCard";
 import RideBookingType from "../../types/RideBookingType";
 import store from "../../redux/Store";
@@ -51,7 +52,18 @@ const VehicleList = ({ originCity, destinationCity, distance, duration, driverId
     store.dispatch(saveRideBookingData(rideBookingData));
     setTimeout(() => {
       console.log('rideBookingData', bookingDetails)
-      showAlert('Navigating you to the booking confirmation page..', '✅', 'success');
+      const alert = new Promise((successTrip) => {
+        setTimeout(() => {
+          successTrip('Trip Details are confirmed!');
+        }
+          , 2000);
+      });
+
+      toast.promise(alert, {
+        loading: 'Loading',
+        success: 'Trip Details are confirmed!',
+        error: 'An error occurred while confirming trip details!',
+      });
       navigate('/confirm-trip');
     }, 2000);
   }
@@ -59,7 +71,7 @@ const VehicleList = ({ originCity, destinationCity, distance, duration, driverId
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
       <h2 className="text-2xl font-semibold mb-4">Select a Date and Time.</h2>
-      <DateTimePicker value={selectedDateTime} onChange={setSelectedDateTime}/>
+      <DateTimePicker value={selectedDateTime} onChange={setSelectedDateTime} />
       <h2 className="text-2xl font-semibold m-2">Distance Estimation.</h2>
 
       <TravelDistanceCard
