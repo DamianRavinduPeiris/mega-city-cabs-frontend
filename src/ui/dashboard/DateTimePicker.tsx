@@ -1,6 +1,6 @@
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
+import { showAlert } from "../../util/CommonUtils"
 
 export default function DateTimePicker({
   value,
@@ -116,6 +116,13 @@ export default function DateTimePicker({
     newDate.setFullYear(selectedDate.getFullYear())
     newDate.setMonth(selectedDate.getMonth())
     newDate.setDate(selectedDate.getDate())
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to midnight for comparison
+
+    if (selectedDate < today) {
+      showAlert("Date cannot be in the past!", "❌", "error");
+      return;
+    }
 
     setDate(newDate)
     setView("time")
@@ -276,9 +283,8 @@ export default function DateTimePicker({
             <button
               type="button"
               onClick={() => setView("date")}
-              className={`flex-1 px-4 py-2 text-sm font-medium ${
-                view === "date" ? "bg-gray-100 text-gray-900" : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`flex-1 px-4 py-2 text-sm font-medium ${view === "date" ? "bg-gray-100 text-gray-900" : "text-gray-500 hover:text-gray-700"
+                }`}
             >
               <div className="flex items-center justify-center">
                 {/* Calendar icon */}
@@ -296,9 +302,8 @@ export default function DateTimePicker({
             <button
               type="button"
               onClick={() => setView("time")}
-              className={`flex-1 px-4 py-2 text-sm font-medium ${
-                view === "time" ? "bg-gray-100 text-gray-900" : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`flex-1 px-4 py-2 text-sm font-medium ${view === "time" ? "bg-gray-100 text-gray-900" : "text-gray-500 hover:text-gray-700"
+                }`}
             >
               <div className="flex items-center justify-center">
                 {/* Clock icon */}
@@ -358,13 +363,12 @@ export default function DateTimePicker({
                       <button
                         type="button"
                         onClick={() => handleSelectDate(day)}
-                        className={`h-8 w-8 rounded-full flex items-center justify-center text-sm transition-colors ${
-                          isSelectedDate(day)
+                        className={`h-8 w-8 rounded-full flex items-center justify-center text-sm transition-colors ${isSelectedDate(day)
                             ? "bg-black text-white"
                             : isToday(day)
                               ? "border border-gray-300 hover:bg-gray-100"
                               : "hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         {day.getDate()}
                       </button>
@@ -430,18 +434,16 @@ export default function DateTimePicker({
                   <button
                     type="button"
                     onClick={() => handlePeriodChange("AM")}
-                    className={`px-2 py-1 text-xs rounded-md ${
-                      period === "AM" ? "bg-black text-white" : "bg-gray-100 hover:bg-gray-200"
-                    }`}
+                    className={`px-2 py-1 text-xs rounded-md ${period === "AM" ? "bg-black text-white" : "bg-gray-100 hover:bg-gray-200"
+                      }`}
                   >
                     AM
                   </button>
                   <button
                     type="button"
                     onClick={() => handlePeriodChange("PM")}
-                    className={`px-2 py-1 text-xs rounded-md ${
-                      period === "PM" ? "bg-black text-white" : "bg-gray-100 hover:bg-gray-200"
-                    }`}
+                    className={`px-2 py-1 text-xs rounded-md ${period === "PM" ? "bg-black text-white" : "bg-gray-100 hover:bg-gray-200"
+                      }`}
                   >
                     PM
                   </button>

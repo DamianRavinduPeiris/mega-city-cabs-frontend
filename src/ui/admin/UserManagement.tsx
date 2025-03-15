@@ -27,7 +27,7 @@ const UserManagement: FC = () => {
                 console.log('error', er)
             })
 
-    })
+    }, [baseURL])
 
 
     return (

@@ -99,14 +99,13 @@ const Dashboard = () => {
     axios.get<{ data: DriverType[] }>(`${baseURL}/api/v1/driver`)
       .then((res) => {
         setDrivers(res.data.data as DriverType[]);
-        console.log(drivers)
       }).catch((er) => {
         const error = er as AxiosError<ResponseType>
         showAlert("An error occurred while fetching drivers!", "⛔", "error");
         console.log('error', error.message, error.response?.data);
       });
 
-  }, [baseURL, drivers]);
+  }, [baseURL]);
 
 
   return (

@@ -18,7 +18,7 @@
   
   const HowItWorks = () => {
     return (
-      <footer className="bg-gray-100 py-8 px-4">
+      <footer className="bg-gray-100 py-8 px-4 mt-15">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">

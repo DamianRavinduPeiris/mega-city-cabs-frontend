@@ -18,12 +18,11 @@ const DriverManagement: FC = () => {
   useEffect(() => {
     axios.get<ResponseType>(`${baseURL}/api/v1/driver`)
       .then((res) => {
-        console.log(res.data.data);
         setDrivers(res.data.data as DriverType[]);
       }).catch((er) => {
         console.log('error', er);
       });
-  });
+  },[baseURL]);
 
   return (
     <div className="bg-white border border-gray-200 shadow-md rounded-lg p-6">
