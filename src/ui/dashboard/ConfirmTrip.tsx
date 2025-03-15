@@ -73,12 +73,20 @@ export default function ConfirmTrip() {
 
     }, [baseURL, bookingDetails.driverId])
     return (
-        <>
-            <Header />
-            <div className="flex items-center justify-center min-h-screen bg-white p-4">
-                <div className="w-full max-w-md border border-black rounded-xl overflow-hidden shadow-sm">
+        <><div className="w-full bg-black p-6 shadow-lg">
+            <h1 className="text-4xl font-extrabold text-white text-center tracking-wide uppercase">
+                Megacity Payments
+            </h1>
+        </div>
 
-                    <div className="bg-black text-white p-6 flex flex-col items-center">
+
+
+            <div className="flex items-center justify-center min-h-screen bg-white w-full">
+                <div className="w-full max-w-2xl border border-gray-300 rounded-xl overflow-hidden shadow-lg p-6 bg-white">
+
+
+
+                    <div className="bg-black text-white p-6 flex flex-col items-center  max-w-2xl">
                         <div className="text-xs uppercase tracking-widest font-medium mb-1">Your Ride Price</div>
                         <div className="flex items-baseline">
                             <span className="text-4xl font-bold">{bookingDetails.price}</span>
