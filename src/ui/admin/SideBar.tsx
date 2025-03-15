@@ -1,5 +1,5 @@
 import type { FC } from "react"
-import { UserIcon, TruckIcon, UsersIcon } from "@heroicons/react/24/outline"
+import { UserIcon, TruckIcon, UsersIcon ,WalletIcon} from "@heroicons/react/24/outline"
 
 interface SidebarProps {
     activeTab: string
@@ -11,11 +11,12 @@ const Sidebar: FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
         { name: "Users", icon: UserIcon, id: "users" },
         { name: "Drivers", icon: UsersIcon, id: "drivers" },
         { name: "Vehicles", icon: TruckIcon, id: "vehicles" },
+        { name: "Bookings", icon: WalletIcon, id: "bookings" },
     ]
 
     return (
         <div className="bg-black text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
-            <h1 className="font-bold text-4xl">Welcome!</h1>
+            <h1 className="font-bold text-4xl">Welcome</h1>
             <nav>
                 {tabs.map((tab) => (
                     <a

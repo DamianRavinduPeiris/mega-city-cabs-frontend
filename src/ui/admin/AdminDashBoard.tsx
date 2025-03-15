@@ -3,6 +3,7 @@ import DriverManagement from "./DriverManagement"
 import Sidebar from "./SideBar"
 import UserManagement from "./UserManagement"
 import VehicleManagement from "./VehicleManagement"
+import Bookings from "./Bookings"
 
 
 
@@ -18,6 +19,7 @@ export default function AdminDashboard() {
             {activeTab === "users" && <UserManagement />}
             {activeTab === "drivers" && <DriverManagement />}
             {activeTab === "vehicles" && <VehicleManagement />}
+            {activeTab === "bookings" && <Bookings />}
           </div>
         </main>
       </div>
