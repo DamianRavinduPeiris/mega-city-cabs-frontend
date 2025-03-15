@@ -12,7 +12,7 @@ export default function TravelDistanceCard({
   duration = "5h 25m",
 }: TravelCardProps) {
   return (
-    <div className="w-full max-w-sm border border-zinc-200 bg-white shadow-sm rounded-lg overflow-hidden">
+    <div className="w-full max-w-md border border-zinc-200 bg-white shadow-sm rounded-lg overflow-hidden">
       <div className="flex flex-row items-center justify-between p-6 pb-2">
         <div className="flex flex-col space-y-1.5">
           <h3 className="font-semibold text-lg tracking-tight">
@@ -32,7 +32,9 @@ export default function TravelDistanceCard({
           <path d="M3 12h18M21 12l-3-3m3 3l-3 3" />
         </svg>
         <div className="flex flex-col space-y-1.5 items-end">
-          <h3 className="font-semibold text-lg tracking-tight">{destinationCity.charAt(0).toUpperCase() + destinationCity.slice(1)}</h3>
+          <h3 className="font-semibold text-lg tracking-tight">
+            {destinationCity.charAt(0).toUpperCase() + destinationCity.slice(1)}
+          </h3>
           <p className="text-sm text-zinc-500">Destination</p>
         </div>
       </div>
