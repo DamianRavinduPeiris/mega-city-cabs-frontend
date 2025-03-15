@@ -1,6 +1,5 @@
 import type React from "react"
 import { useState, useEffect } from "react"
-import Header from "../Header"
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/Store";
 import axios, { AxiosError } from "axios";
