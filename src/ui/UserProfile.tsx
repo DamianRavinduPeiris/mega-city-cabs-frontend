@@ -9,7 +9,7 @@ import { showAlert, updateUser } from "../util/CommonUtils"
 import UserType from "../types/UserType"
 import { loginUser } from "../redux/UserSlice"
 import store from "../redux/Store"
-import toast, { Toaster } from "react-hot-toast"
+import { Toaster } from "react-hot-toast"
 
 export default function UserProfile() {
     const user = useSelector((state: RootState) => state.user)
@@ -37,17 +37,17 @@ export default function UserProfile() {
         e.preventDefault()
         console.log('Profile data:', profileData)
         if (!profileData.name || profileData.name.trim() === "") {
-            showAlert("Full Name is required!","⛔", "error");
+            showAlert("Full Name is required!", "⛔", "error");
             return;
         }
-    
+
         if (!profileData.email || profileData.email.trim() === "") {
-            showAlert("Email Address is required!","⛔", "error");
+            showAlert("Email Address is required!", "⛔", "error");
             return;
         }
-    
+
         if (!profileData.picture || profileData.picture.trim() === "") {
-            showAlert("Profile Picture URL is required!", "⛔","error");
+            showAlert("Profile Picture URL is required!", "⛔", "error");
             return;
         }
         console.log("Profile data submitted:", profileData)
@@ -79,7 +79,7 @@ export default function UserProfile() {
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
-                            
+
                             </div>
                         </div>
 
@@ -157,7 +157,7 @@ export default function UserProfile() {
                                             <button
                                                 type="submit"
                                                 className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black"
-                                             
+
                                             >
                                                 <Save size={16} />
                                                 Save Changes
