@@ -79,7 +79,9 @@ export default function UserProfile() {
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
-
+                                <h1 className="text-sm font-bold tracking-tight">Name : {profileData.name}</h1>
+                                <h1 className="text-sm font-bold tracking-tight">User ID : {profileData.userId}</h1>
+                                <h1 className="text-sm font-bold tracking-tight">Email : {profileData.email}</h1>    
                             </div>
                         </div>
 
