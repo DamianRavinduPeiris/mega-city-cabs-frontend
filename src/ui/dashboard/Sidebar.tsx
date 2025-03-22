@@ -13,6 +13,7 @@ const logout = () => {
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const navigate = useNavigate();
+
   return (
     <div
       className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${isOpen ? "translate-x-0" : "-translate-x-full"
@@ -33,7 +34,15 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
               className="w-5 h-5"
               alt="Home"
             />
-            <span>Logout</span>
+            <span>Home</span>
+          </div>
+          <div className="flex items-center space-x-3 text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition duration-200">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1rTLeQraa9s-Rkj2_KMPOzh30CwK1G2D85A&s"
+              className="w-5 h-5"
+              alt="Home"
+            />
+            <span onClick={() => navigate("/profile")}>Edit My Profile</span>
           </div>
           <div className="flex items-center space-x-3 text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition duration-200">
             <img
